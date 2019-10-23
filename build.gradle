@@ -1,0 +1,195 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$gradleBintrayPluginVersion"
+    }
+}
+apply plugin: 'java'
+apply plugin: 'distribution'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+
+group 'info.picocli'
+description 'jansi-substratevm - Helper library for using Jansi in GraalVM native images.'
+version "$projectVersion"
+ext.moduleName = 'info.picocli'
+
+sourceCompatibility = 1.5
+targetCompatibility = 1.5
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.fusesource.jansi:jansi:1.18'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+jar {
+    manifest {
+        attributes 'Specification-Title'   : 'Jansi SubstrateVM',
+                'Specification-Vendor'  : 'Remko Popma',
+                'Specification-Version' : version,
+                'Implementation-Title'  : 'Jansi SubstrateVM',
+                'Implementation-Vendor' : 'Remko Popma',
+                'Implementation-Version': version,
+                'Automatic-Module-Name' : 'info.picocli.jansi.substratevm'
+    }
+}
+
+javadoc {
+    destinationDir   = file("build/docs/apidocs")
+}
+javadoc.options.addStringOption('Xdoclint:none', '-quiet')
+
+// work around https://github.com/gradle/gradle/issues/4046
+javadoc.dependsOn('copyJavadocDocFiles')
+task copyJavadocDocFiles(type: Copy) {
+    from('src/main/java')
+    into 'build/docs/apidocs'
+    include '**/doc-files/*.*'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+task testJar(type: Jar, dependsOn: compileTestJava) {
+    from sourceSets.test.output
+    classifier = 'tests'
+}
+task sourcesJar(type: Jar) {
+    from sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+task testSourcesJar(type: Jar) {
+    from sourceSets.test.java.srcDirs
+    classifier = 'test-sources'
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+    archives testSourcesJar
+    archives testJar
+    archives jar
+}
+distributions {
+    main {
+        baseName = "$archivesBaseName-all"
+        contents {
+            from jar
+            from sourcesJar
+            from testJar
+            from testSourcesJar
+            from javadocJar
+            from ('LICENSE')
+            from ("$rootDir/RELEASE-NOTES.md")
+        }
+    }
+}
+ext {
+    bintrayUsername   = System.getenv('BINTRAY_USER')
+    bintrayApiKey     = System.getenv('BINTRAY_KEY')
+    mavenOssUser      = System.getenv('MAVEN_OSS_USER')
+    mavenOssPassword  = System.getenv('MAVEN_OSS_PASSWORD')
+
+    // pom configuration for MavenPublication
+    pomConfig = {
+        licenses {
+            license {
+                name "The Apache Software License, version 2.0"
+                url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution "repo"
+            }
+        }
+        developers {
+            developer {
+                id "rpopma"
+                name "Remko Popma"
+                email "rpopma@apache.org"
+            }
+        }
+        scm {
+            url "https://github.com/remkop/picocli/tree/master"
+            connection 'scm:git:https://github.com/remkop/picocli.git'
+            developerConnection 'scm:git:ssh://github.com:remkop/picocli.git'
+        }
+    }
+}
+ext {
+    bintrayPackage    = 'jansi-substratevm'
+    bintrayWebsiteUrl = 'https://github.com/remkop/jansi-substratevm'
+    bintrayLabels     = ['jansi', 'GraalVm', 'SubstrateVM', 'native image', 'picocli']
+}
+ext {
+    bintrayDryRun     = false //[Default: false] Whether to run this as dry-run, without deploying
+    bintrayPublish    = true //[Default: false] Whether version should be auto published after an upload
+    bintrayOverride   = false //[Default: false] Whether to override version artifacts already published
+    mavenOssSync      = true //[Default: true] Determines whether to sync the version to Maven Central.
+}
+bintray {
+    user = bintrayUsername
+    key  = bintrayApiKey
+    publications = ['MyPublication']
+    dryRun   = bintrayDryRun //[Default: false] Whether to run this as dry-run, without deploying
+    publish  = bintrayPublish //[Default: false] Whether version should be auto published after an upload
+    override = bintrayOverride //[Default: false] Whether to override version artifacts already published
+    //Package configuration. The plugin will use the repo and name properties to check if the package already exists. In that case, there's no need to configure the other package properties (like userOrg, desc, etc).
+    pkg {
+        repo     = 'picocli'
+        name     = bintrayPackage
+        userOrg  = 'remkop'
+        licenses = ['Apache-2.0']
+        desc = description
+        websiteUrl = bintrayWebsiteUrl
+        issueTrackerUrl = 'https://github.com/remkop/jansi-substratevm/issues'
+        vcsUrl   = 'https://github.com/remkop/jansi-substratevm.git'
+        labels = bintrayLabels
+        publicDownloadNumbers = false
+        version {
+            name     = "$projectVersion"
+            desc     = description
+            released = new Date()
+            vcsTag   = "v$projectVersion"
+            mavenCentralSync {
+                sync = mavenOssSync //[Default: true] Determines whether to sync the version to Maven Central.
+                user = mavenOssUser //OSS user token: mandatory
+                password = mavenOssPassword //OSS user password: mandatory
+                close = '1' //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
+            }
+        }
+    }
+}
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact testJar
+            artifact testSourcesJar
+            artifact javadocJar
+            groupId 'info.picocli'
+            artifactId bintrayPackage
+            version "$projectVersion"
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('packaging',     'jar')
+                root.appendNode('name',          bintrayPackage)
+                root.appendNode('description',   description)
+                root.appendNode('url',           'https://github.com/remkop/jansi-substratevm')
+                root.appendNode('inceptionYear', '2019')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
