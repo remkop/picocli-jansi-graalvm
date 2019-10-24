@@ -90,12 +90,14 @@ You can now generate a [native image](https://www.graalvm.org/docs/reference-man
 ```
 set GRAAL_HOME=C:\apps\graalvm-ce-19.2.1
 
+:: compile our my.pkg.MyApp class (assuming the source is in the .\src directory)
 mkdir classes
 javac -cp ^
   .;picocli-4.0.4.jar;picocli-codegen-4.0.4.jar;jansi-1.18.jar;jansi-substrate-1.0.jar ^
   -sourcepath src
   -d classes src\my\pkg\MyApp.java
-  
+
+:: create a jar
 cd classes && jar -cvef my.pkg.MyApp ../myapp.jar * && cd ..
 
 %GRAAL_HOME%\bin\native-image ^
@@ -106,7 +108,7 @@ cd classes && jar -cvef my.pkg.MyApp ../myapp.jar * && cd ..
 This creates a `myapp.exe` Windows executable in the current directory for the `my.pkg.MyApp` class.
 
 
-Note that there is a [known issue](https://github.com/oracle/graal/issues/1762) with Windows native images generated with Graal 19.2.1, which is that they require the `msvcr100.dll` library as an external dependency. This file is not always present on a Windows 10 system, so we recommend that you distribute the `msvcr100.dll` file (you can find it in the `C:\Windows\System32` directory) together with your Windows native image.
+Note that there is a [known issue](https://github.com/oracle/graal/issues/1762) with Windows native images generated with Graal 19.2.1:  the `msvcr100.dll` library is required as an external dependency. This file is not always present on a Windows 10 system, so we recommend that you distribute the `msvcr100.dll` file (you can find it in the `C:\Windows\System32` directory) together with your Windows native image.
 
 
 ## Why do we need jansi-substratevm?
