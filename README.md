@@ -3,10 +3,10 @@ Helper library for using Jansi in GraalVM native images.
 
 ## Introduction
 
-GraalVM now offers experimental support for Windows native images,
-so it is now possible to build applications in Java and compile them to a native Windows executable.
+![GraalVM](https://www.graalvm.org/resources/img/logo-colored.svg) now offers experimental support for Windows native images,
+so it is now possible to **build applications in Java and compile them to a native Windows executable** that does not require a JVM to be installed and has extremely fast startup time and lower memory requirements.
 
-By building your command line application with the [picocli](https://github.com/remkop/picocli) library you get ANSI colors and styles for free, and you naturally want this functionality when building a native Windows executable.
+By building your command line application with the <a href="https://github.com/remkop/picocli"><img src="https://picocli.info/images/logo/horizontal.png" height="40" alt="picocli"></a> library you get ANSI colors and styles for free, and you naturally want this functionality when building a native Windows executable.
 
 The [Jansi](https://github.com/fusesource/jansi) library makes it easy to enable ANSI escape codes in the `cmd.exe` console or PowerShell console. Unfortunately, the Jansi library (as of version 1.18) by itself is not sufficient to show show colors in the console when running as a GraalVM native image in Windows.
 
