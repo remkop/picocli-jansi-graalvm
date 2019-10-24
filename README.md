@@ -1,4 +1,4 @@
-# jansi-substratevm
+# picocli-jansi-substratevm
 Helper library for using Jansi in GraalVM native images.
 
 Create native Windows executable command line applications with colors in Java.
@@ -14,11 +14,11 @@ By building your command line application with the [picocli](https://github.com/
 
 The [Jansi](https://github.com/fusesource/jansi) library makes it easy to enable ANSI escape codes in the `cmd.exe` console or PowerShell console. Unfortunately, the Jansi library (as of version 1.18) by itself is not sufficient to show show colors in the console when running as a GraalVM native image in Windows.
 
-`jansi-substratevm` is a helper library that enables the use of ANSI escape codes in GraalVM native image applications running on Windows.
+`picocli-jansi-substratevm` is a helper library that enables the use of ANSI escape codes in GraalVM native image applications running on Windows.
 
 ## Usage
 
-The `AnsiConsole` class can be used as a drop-in replacement of the standard Jansi `org.fusesource.jansi.AnsiConsole` class to enable the Jansi ANSI support, either when running on the JVM or as a native image application.
+The `picocli.jansi.substratevm.AnsiConsole` class can be used as a drop-in replacement of the standard Jansi `org.fusesource.jansi.AnsiConsole` class to enable the Jansi ANSI support, either when running on the JVM or as a native image application.
 
 
 ```java
@@ -93,7 +93,7 @@ set GRAAL_HOME=C:\apps\graalvm-ce-19.2.1
 :: compile our my.pkg.MyApp class (assuming the source is in the .\src directory)
 mkdir classes
 javac -cp ^
-  .;picocli-4.0.4.jar;picocli-codegen-4.0.4.jar;jansi-1.18.jar;jansi-substrate-1.0.jar ^
+  .;picocli-4.0.4.jar;picocli-codegen-4.0.4.jar;jansi-1.18.jar;picocli-jansi-substratevm-1.0.jar ^
   -sourcepath src
   -d classes src\my\pkg\MyApp.java
 
@@ -102,7 +102,7 @@ cd classes && jar -cvef my.pkg.MyApp ../myapp.jar * && cd ..
 
 :: generate native image
 %GRAAL_HOME%\bin\native-image ^
-  -cp picocli-4.0.4.jar;jansi-1.18.jar;jansi-substrate-1.0.jar;myapp.jar ^
+  -cp picocli-4.0.4.jar;jansi-1.18.jar;picocli-jansi-substratevm-1.0.jar;myapp.jar ^
   my.pkg.MyApp myapp
 ```
 
