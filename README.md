@@ -6,7 +6,9 @@ Helper library for using Jansi in GraalVM native images.
 GraalVM native images now offer experimental support for Windows,
 so it is now possible to build applications in Java and compile them to a native Windows executable.
 
-Many command line applications use Jansi to enable ANSI escape codes to show colors in the `cmd.exe` console or PowerShell console.
+By building your command line application with the [picocli](https://github.com/remkop/picocli) library you get ANSI colors and styles for free, and you naturally want this functionality when building a native Windows executable.
+
+The [Jansi](https://github.com/fusesource/jansi) library makes it easy to enable ANSI escape codes in the `cmd.exe` console or PowerShell console to show colors.
 
 Unfortunately, the Jansi library (as of version 1.18) by itself is not sufficient to show show colors in the console when running as a GraalVM native image in Windows.
 
@@ -18,16 +20,27 @@ The `AnsiConsole` class can be used as a drop-in replacement of the standard Jan
 
 
 ```java
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 import picocli.jansi.substratevm.AnsiConsole;
 
-public class MyApp {
+@Command(name = "myapp", mixinStandardHelpOptions = true, version = "1.0",
+         description = "Example native CLI app with colors")
+public class MyApp implements Runnable {
+
+    @Option(name = "--user", description = "User name")
+    String user;
+    
+    public void run() {
+        System.out.printf("Hello, %s%n", user);
+    }
 
     public static void main(String[] args) {
-        AnsiConsole.systemInstall();
-        doCoolStuff();
-        AnsiConsole.systemUninstall();
+        AnsiConsole.systemInstall(); // enable colors on Windows
+        new CommandLine(new MyApp()).execute(args);
+        AnsiConsole.systemUninstall(); // cleanup when done
     }
-    // ...
 }
 ```
 
@@ -54,13 +67,41 @@ public class OtherApp {
 
 See the [Jansi README](https://github.com/fusesource/jansi) for more details on what Jansi can do.
 
+## Generating a native image for Windows
 
-## Details
+There are three steps to set up the toolchain for building native images on Windows. First, install the [latest version of GraalVM](https://www.graalvm.org/docs/getting-started/), 19.2.1 as of this writing.  Next, install the [Microsoft Windows SDK for Windows 7 and .NET Framework 4](https://www.microsoft.com/en-us/download/details.aspx?id=8442) as well as the [C compilers from KB2519277](https://stackoverflow.com/a/45784634/873282). The easiest way to install these is using [chocolatey](https://chocolatey.org/docs/installation):
+
+```
+choco install windows-sdk-7.1 kb2519277
+```
+
+Finally (from the cmd prompt), activate the sdk-7.1 environment:
+
+```
+call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd"
+```
+
+This starts a new Command Prompt, with the sdk-7.1 environment enabled. Run all subsequent commands in this Command Prompt window. This completes the toolchain setup.
+
+You can now generate a native image for your application by calling the `native-image` generator tool in the `%GRAAL_HOME%\bin` directory. For example:
+
+```
+set GRAAL_HOME=C:\apps\graalvm-ce-19.2.1
+
+%GRAAL_HOME%\bin\native-image ^
+  -cp picocli-4.0.4.jar;jansi-1.18.jar;jansi-substrate-1.0.jar;myapp.jar ^
+  my.pkg.MyApp myapp
+```
+
+This creates a `myapp.exe` Windows executable in the current directory for the `my.pkg.MyApp` class.
+
+
+## Why do we need jansi-substratevm?
 
 When generating a native image, we need two configuration files for Jansi:
 
-* [JNI](https://github.com/oracle/graal/blob/master/substratevm/JNI.md) - Jansi uses JNI, and all classes, methods, and fields that should be accessible via JNI must be specified during native image generation in a configuration file
-* [resources](https://github.com/oracle/graal/blob/master/substratevm/RESOURCES.md) - to get a single executable we need to bundle the jansi.dll in the native image. We need some configuration to ensure the jansi.dll is included as a resource.
+* [JNI](https://github.com/oracle/graal/blob/master/substratevm/JNI.md) - Jansi uses JNI, and all classes, methods, and fields that should be accessible via JNI must be specified during native image generation in a configuration file. This library adds a `/META-INF/native-image/jansi-substratevm/jni-config.json` configuration file for the Jansi `org.fusesource.jansi.internal.CLibrary` and `org.fusesource.jansi.internal.Kernel32` classes.
+* [resources](https://github.com/oracle/graal/blob/master/substratevm/RESOURCES.md) - to get a single executable we need to bundle the jansi.dll in the native image. We need some configuration to ensure the jansi.dll is included as a resource.  This library adds a `/META-INF/native-image/jansi-substratevm/resource-config.json` configuration file that ensures the `/META-INF/native/windows64/jansi.dll` file is included as a resource in the native image.
 
 By including these configuration files in our JAR file, developers can simply put this JAR in the classpath when creating a native image; no command line options are necessary.
 
