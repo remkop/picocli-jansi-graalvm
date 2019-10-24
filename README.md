@@ -129,6 +129,8 @@ cannot be extracted from the native image even when it is included as a resource
 
 The `picocli.jansi.substratevm.Workaround` class provides a workaround for this.
 
+*I filed [a ticket for the above](https://github.com/fusesource/jansi/issues/162) on the Jansi issue tracker, and this project will become obsolete if the Jansi library maintainers accept the [pull](https://github.com/fusesource/jansi-native/pull/21) [requests](https://github.com/fusesource/hawtjni/pull/61) I proposed, or fix these problems in some other way.*
+
 ## JNI Configuration Generator
 
 The `jni-config.json` file contains JNI configuration for all classes, methods and fields in `org.fusesource.jansi.internal.CLibrary` and `org.fusesource.jansi.internal.Kernel32`.
