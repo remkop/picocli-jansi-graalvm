@@ -86,6 +86,13 @@ You can now generate a native image for your application by calling the `native-
 ```
 set GRAAL_HOME=C:\apps\graalvm-ce-19.2.1
 
+mkdir classes
+javac -cp ^
+  .;picocli-4.0.4.jar;picocli-codegen-4.0.4.jar;jansi-1.18.jar;jansi-substrate-1.0.jar ^
+  -d classes my\pkg\MyApp.java
+  
+cd classes && jar -cvef my.pkg.MyApp ../myapp.jar * && cd ..
+
 %GRAAL_HOME%\bin\native-image ^
   -cp picocli-4.0.4.jar;jansi-1.18.jar;jansi-substrate-1.0.jar;myapp.jar ^
   my.pkg.MyApp myapp
