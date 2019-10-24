@@ -8,11 +8,9 @@ so it is now possible to build applications in Java and compile them to a native
 
 By building your command line application with the [picocli](https://github.com/remkop/picocli) library you get ANSI colors and styles for free, and you naturally want this functionality when building a native Windows executable.
 
-The [Jansi](https://github.com/fusesource/jansi) library makes it easy to enable ANSI escape codes in the `cmd.exe` console or PowerShell console.
+The [Jansi](https://github.com/fusesource/jansi) library makes it easy to enable ANSI escape codes in the `cmd.exe` console or PowerShell console. Unfortunately, the Jansi library (as of version 1.18) by itself is not sufficient to show show colors in the console when running as a GraalVM native image in Windows.
 
-Unfortunately, the Jansi library (as of version 1.18) by itself is not sufficient to show show colors in the console when running as a GraalVM native image in Windows.
-
-This library enables the use of ANSI escape codes in GraalVM native image applications running on Windows.
+`jansi-substratevm` is a helper library that enables the use of ANSI escape codes in GraalVM native image applications running on Windows.
 
 ## Usage
 
@@ -94,6 +92,9 @@ set GRAAL_HOME=C:\apps\graalvm-ce-19.2.1
 ```
 
 This creates a `myapp.exe` Windows executable in the current directory for the `my.pkg.MyApp` class.
+
+
+Note that there is a [known issue](https://github.com/oracle/graal/issues/1762) with Windows native images generated with Graal 19.2.1, which is that they require the `msvcr100.dll` library as an external dependency. This file is not always present on a Windows 10 system, so we recommend that you distribute the `msvcr100.dll` file (you can find it in the `C:\Windows\System32` directory) together with your Windows native image.
 
 
 ## Why do we need jansi-substratevm?
