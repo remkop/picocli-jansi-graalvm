@@ -3,12 +3,12 @@ Helper library for using Jansi in GraalVM native images.
 
 ## Background
 
-GraalVM native images now offer experimental support for Windows,
+GraalVM now offers experimental support for Windows native images,
 so it is now possible to build applications in Java and compile them to a native Windows executable.
 
 By building your command line application with the [picocli](https://github.com/remkop/picocli) library you get ANSI colors and styles for free, and you naturally want this functionality when building a native Windows executable.
 
-The [Jansi](https://github.com/fusesource/jansi) library makes it easy to enable ANSI escape codes in the `cmd.exe` console or PowerShell console to show colors.
+The [Jansi](https://github.com/fusesource/jansi) library makes it easy to enable ANSI escape codes in the `cmd.exe` console or PowerShell console.
 
 Unfortunately, the Jansi library (as of version 1.18) by itself is not sufficient to show show colors in the console when running as a GraalVM native image in Windows.
 
@@ -23,7 +23,7 @@ The `AnsiConsole` class can be used as a drop-in replacement of the standard Jan
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import picocli.jansi.substratevm.AnsiConsole;
+import picocli.jansi.substratevm.AnsiConsole; // not org.fusesource.jansi.AnsiConsole
 
 @Command(name = "myapp", mixinStandardHelpOptions = true, version = "1.0",
          description = "Example native CLI app with colors")
@@ -105,15 +105,14 @@ When generating a native image, we need two configuration files for Jansi:
 
 By including these configuration files in our JAR file, developers can simply put this JAR in the classpath when creating a native image; no command line options are necessary.
 
-Also, there is a problem extracting the jansi.dll from the native image.
+Also, there is a problem extracting the `jansi.dll` from the native image.
 The `org.fusesource.hawtjni.runtime.Library` (in jansi 1.18) uses non-standard
 system properties to determine the bitMode of the platform,
 and these system properties are not available in SubstrateVM (the Graal native image JVM).
+As a result, the native library embedded in the Jansi JAR under `/META-INF/native/windows64/jansi.dll`
+cannot be extracted from the native image even when it is included as a resource.
 
-As a result, the native libraries embedded in the Jansi JAR under `/META-INF/native/*64/*`
-cannot be extracted from the native image even when they are included as a resource.
-
-The `Workaround` class provides a workaround for this.
+The `picocli.jansi.substratevm.Workaround` class provides a workaround for this.
 
 ## JNI Configuration Generator
 
