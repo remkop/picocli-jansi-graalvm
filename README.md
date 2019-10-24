@@ -8,7 +8,7 @@ Create native Windows executable command line applications with colors in Java.
 GraalVM now offers experimental support for Windows native images,
 so it is now possible to **build applications in Java and compile them to a native Windows executable** that does not require a JVM to be installed and has extremely fast startup time and lower memory requirements.
 
-![GraalVM](https://www.graalvm.org/resources/img/logo-colored.svg) &nbsp;&nbsp;&nbsp;  <a href="https://github.com/remkop/picocli"><img src="https://picocli.info/images/logo/horizontal.png" height="40" alt="picocli"></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="https://github.com/fusesource/jansi"><img src="https://camo.githubusercontent.com/f1eebfa71af81086762ab38337c9d563bd7ac6a1/687474703a2f2f66757365736f757263652e6769746875622e696f2f6a616e73692f696d616765732f70726f6a6563742d6c6f676f2e706e67" alt="jansi" height="30"></a>
+<a href="https://www.graalvm.org/"><img src="https://www.graalvm.org/resources/img/logo-colored.svg" alt="GraalVM logo"></a> &nbsp;&nbsp;&nbsp;  <a href="https://github.com/remkop/picocli"><img src="https://picocli.info/images/logo/horizontal.png" height="40" alt="picocli logo"></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="https://github.com/fusesource/jansi"><img src="https://camo.githubusercontent.com/f1eebfa71af81086762ab38337c9d563bd7ac6a1/687474703a2f2f66757365736f757263652e6769746875622e696f2f6a616e73692f696d616765732f70726f6a6563742d6c6f676f2e706e67" alt="jansi logo" height="30"></a>
 
 By building your command line application with the [picocli](https://github.com/remkop/picocli) library you get ANSI colors and styles for free, and you naturally want this functionality when building a native Windows executable.
 
@@ -85,7 +85,7 @@ call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd"
 
 This starts a new Command Prompt, with the sdk-7.1 environment enabled. Run all subsequent commands in this Command Prompt window. This completes the toolchain setup.
 
-You can now generate a native image for your application by calling the `native-image` generator tool in the `%GRAAL_HOME%\bin` directory. For example:
+You can now generate a [native image](https://www.graalvm.org/docs/reference-manual/native-image/) for your application by calling the `native-image` generator tool in the `%GRAAL_HOME%\bin` directory. For example:
 
 ```
 set GRAAL_HOME=C:\apps\graalvm-ce-19.2.1
