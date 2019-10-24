@@ -1,7 +1,7 @@
 # jansi-substratevm
 Helper library for using Jansi in GraalVM native images.
 
-## Background
+## Introduction
 
 GraalVM now offers experimental support for Windows native images,
 so it is now possible to build applications in Java and compile them to a native Windows executable.
@@ -14,7 +14,7 @@ The [Jansi](https://github.com/fusesource/jansi) library makes it easy to enable
 
 ## Usage
 
-The `AnsiConsole` class can be used as a drop-in replacement of the standard Jansi `org.fusesource.jansi.AnsiConsole` class to enable the Jansi ANSI support.
+The `AnsiConsole` class can be used as a drop-in replacement of the standard Jansi `org.fusesource.jansi.AnsiConsole` class to enable the Jansi ANSI support, either when running on the JVM or as a native image application.
 
 
 ```java
