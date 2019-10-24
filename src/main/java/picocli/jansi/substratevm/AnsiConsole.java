@@ -13,7 +13,7 @@ import java.io.PrintStream;
  * This works around a problem in Jansi's
  * <code>org.fusesource.hawtjni.runtime.Library</code>
  * that prevents the native libraries embedded in the Jansi JAR in
- * <code>/META-INF/native/*64/*</code> from being loaded
+ * <code>/META-INF/native/*</code> from being loaded
  * when running in a GraalVM native image.
  * </p>
  * <p>

@@ -6,7 +6,7 @@ package picocli.jansi.substratevm;
  * This class provides a workaround for a problem in Jansi's
  * <code>org.fusesource.hawtjni.runtime.Library</code>
  * that prevents the native libraries embedded in the Jansi JAR in
- * <code>/META-INF/native/*64/*</code> from being loaded
+ * <code>/META-INF/native/*</code> from being loaded
  * when running in a GraalVM native image.
  * </p>
  * <p>
@@ -14,18 +14,18 @@ package picocli.jansi.substratevm;
  * For example:
  * </p>
  * <pre>
- * import org.fusesource.jansi.AnsiConsole;
+ * import org.fusesource.jansi.internal.WindowsSupport;
  * import picocli.jansi.substratevm.Workaround;
  *
- * public class MyApp {
+ * public class OtherApp {
+ *
  *     static {
  *         Workaround.enableLibraryLoad();
  *     }
  *
- *     public static void main(String[] args)  {
- *         AnsiConsole.systemInstall();
- *         doCoolStuff();
- *         AnsiConsole.systemUninstall();
+ *     public static void main(String[] args) {
+ *         int width = WindowsSupport.getWindowsTerminalWidth();
+ *         doCoolStuff(width);
  *     }
  *     // ...
  * }
