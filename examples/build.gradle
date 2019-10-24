@@ -1,0 +1,51 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.com.palantir.graal:gradle-graal:0.6.0"
+    }
+}
+plugins {
+    id 'java'
+}
+apply plugin: 'com.palantir.graal'
+
+group 'info.picocli'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    jcenter()
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    compile 'info.picocli:picocli:4.0.4'
+    compile rootProject
+    compile 'org.fusesource.jansi:jansi:1.18'
+    annotationProcessor 'info.picocli:picocli-codegen:4.0.4'
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.2")
+}
+
+compileJava {
+    options.compilerArgs += ["-Aproject=${project.group}/${project.name}"]
+}
+
+test {
+    useJUnitPlatform()
+}
+test.dependsOn(nativeImage)
+
+graal {
+    mainClass 'my.pkg.MyApp'
+    outputName 'myapp'
+    //graalVersion '19.2.1'
+    option '--static'
+}

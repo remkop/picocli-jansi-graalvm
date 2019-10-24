@@ -1,1 +1,3 @@
 rootProject.name = 'picocli-jansi-substratevm'
+
+include 'examples'
