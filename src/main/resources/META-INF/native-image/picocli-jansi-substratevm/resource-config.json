@@ -1,5 +1,6 @@
 {
   "resources": [
-    {"pattern": "META-INF/native/windows64/jansi.dll"}
+    {"pattern": "META-INF/native/.*64/.*"},
+    {"pattern": "META-INF/native/osx/libjansi.jnilib"}
   ]
 }
