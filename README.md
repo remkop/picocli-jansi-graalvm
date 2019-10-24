@@ -121,7 +121,7 @@ When generating a native image, we need two configuration files for Jansi:
 
 By including these configuration files in our JAR file, developers can simply put this JAR in the classpath when creating a native image; no command line options are necessary.
 
-Also, there is a problem extracting the `jansi.dll` from the native image.
+Also, when using Jansi without this library, there is a problem extracting the `jansi.dll` from the native image.
 The `org.fusesource.hawtjni.runtime.Library` (in jansi 1.18) uses non-standard
 system properties to determine the bitMode of the platform,
 and these system properties are not available in SubstrateVM (the Graal native image JVM).
