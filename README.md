@@ -94,7 +94,7 @@ set GRAAL_HOME=C:\apps\graalvm-ce-19.2.1
 mkdir classes
 javac -cp ^
   .;picocli-4.0.4.jar;picocli-codegen-4.0.4.jar;jansi-1.18.jar;picocli-jansi-substratevm-1.0.jar ^
-  -sourcepath src
+  -sourcepath src ^
   -d classes src\my\pkg\MyApp.java
 
 :: create a jar
