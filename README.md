@@ -100,6 +100,7 @@ javac -cp ^
 :: create a jar
 cd classes && jar -cvef my.pkg.MyApp ../myapp.jar * && cd ..
 
+:: generate native image
 %GRAAL_HOME%\bin\native-image ^
   -cp picocli-4.0.4.jar;jansi-1.18.jar;jansi-substrate-1.0.jar;myapp.jar ^
   my.pkg.MyApp myapp
