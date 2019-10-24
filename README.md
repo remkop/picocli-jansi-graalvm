@@ -1,5 +1,7 @@
 # jansi-substratevm
-Helper library for using Jansi in GraalVM native images: create native Windows executable command line applications with colors in Java.
+Helper library for using Jansi in GraalVM native images.
+
+Create native Windows executable command line applications with colors in Java.
 
 ## Introduction
 
