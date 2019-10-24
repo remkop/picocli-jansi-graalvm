@@ -14,26 +14,45 @@ This library enables the use of ANSI escape codes in GraalVM native image applic
 
 ## Usage
 
-The `NativeJansi` class can be used instead of the standard Jansi `AnsiConsole` class to enable the Jansi ANSI support.
+The `AnsiConsole` class can be used as a drop-in replacement of the standard Jansi `org.fusesource.jansi.AnsiConsole` class to enable the Jansi ANSI support.
 
 
 ```java
-import picocli.jansi.substratevm.windows64.NativeJansi;
+import picocli.jansi.substratevm.AnsiConsole;
 
 public class MyApp {
-    public static void main(String... args) {
-        NativeJansi.systemInstall(); // instead of AnsiConsole.systemInstall()
-        
-        printColoredOutputToConsole();
 
-        NativeJansi.systemUninstall(); // instead of AnsiConsole.systemUninstall()
+    public static void main(String[] args) {
+        AnsiConsole.systemInstall();
+        doCoolStuff();
+        AnsiConsole.systemUninstall();
     }
-    
     // ...
 }
 ```
 
-See the [Jansi README](https://github.com/fusesource/jansi) for more details.
+If you require other Jansi functionality than `AnsiConsole`,
+call the `Workaround.enableLibraryLoad()` method before invoking the Jansi code. For example:
+
+```java
+import org.fusesource.jansi.internal.WindowsSupport;
+import picocli.jansi.substratevm.Workaround;
+
+public class OtherApp {
+
+    static {
+        Workaround.enableLibraryLoad();
+    }
+
+    public static void main(String[] args) {
+        int width = WindowsSupport.getWindowsTerminalWidth();
+        doCoolStuff(width);
+    }
+    // ...
+}
+```
+
+See the [Jansi README](https://github.com/fusesource/jansi) for more details on what Jansi can do.
 
 
 ## Details
@@ -50,7 +69,21 @@ The `org.fusesource.hawtjni.runtime.Library` (in jansi 1.18) uses non-standard
 system properties to determine the bitMode of the platform,
 and these system properties are not available in SubstrateVM (the Graal native image JVM).
 
-As a result, the `jansi.dll` cannot be extracted from the native image even when it is included as a resource.
+As a result, the native libraries embedded in the Jansi JAR under `/META-INF/native/*64/*`
+cannot be extracted from the native image even when they are included as a resource.
 
-The `NativeJansi` class provides a workaround for this.
+The `Workaround` class provides a workaround for this.
 
+## JNI Configuration Generator
+
+The `jni-config.json` file contains JNI configuration for all classes, methods and fields in `org.fusesource.jansi.internal.CLibrary` and `org.fusesource.jansi.internal.Kernel32`.
+
+The following command can be used to regenerate it:
+
+```
+java -cp picocli-4.0.4.jar;jansi-1.18.jar;picocli-codegen-4.0.5-SNAPSHOT.jar ^
+  picocli.codegen.aot.graalvm.JniConfigGenerator ^
+  org.fusesource.jansi.internal.CLibrary ^
+  org.fusesource.jansi.internal.Kernel32 ^
+  -o=.\jni-config.json
+```
