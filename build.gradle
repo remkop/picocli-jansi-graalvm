@@ -18,7 +18,7 @@ apply plugin: 'com.jfrog.bintray'
 
 
 group 'info.picocli'
-description 'picocli-jansi-substratevm - Create native Windows executable command line applications with colors in Java.'
+description 'picocli-jansi-graalvm - Create native Windows executable command line applications with colors in Java.'
 version "$projectVersion"
 ext.moduleName = 'info.picocli'
 
@@ -37,13 +37,13 @@ dependencies {
 
 jar {
     manifest {
-        attributes 'Specification-Title'   : 'Picocli Jansi SubstrateVM',
+        attributes 'Specification-Title'   : 'Picocli Jansi GraalVM',
                 'Specification-Vendor'  : 'Remko Popma',
                 'Specification-Version' : version,
-                'Implementation-Title'  : 'Picocli Jansi SubstrateVM',
+                'Implementation-Title'  : 'Picocli Jansi GraalVM',
                 'Implementation-Vendor' : 'Remko Popma',
                 'Implementation-Version': version,
-                'Automatic-Module-Name' : 'info.picocli.jansi.substratevm'
+                'Automatic-Module-Name' : 'info.picocli.jansi.graalvm'
     }
 }
 
@@ -120,16 +120,16 @@ ext {
             }
         }
         scm {
-            url "https://github.com/remkop/picocli-jansi-substratevm/tree/master"
-            connection 'scm:git:https://github.com/remkop/picocli-jansi-substratevm.git'
-            developerConnection 'scm:git:ssh://github.com:remkop/picocli-jansi-substratevm.git'
+            url "https://github.com/remkop/picocli-jansi-graalvm/tree/master"
+            connection 'scm:git:https://github.com/remkop/picocli-jansi-graalvm.git'
+            developerConnection 'scm:git:ssh://github.com:remkop/picocli-jansi-graalvm.git'
         }
     }
 }
 ext {
-    bintrayPackage    = 'picocli-jansi-substratevm'
-    bintrayWebsiteUrl = 'https://github.com/remkop/picocli-jansi-substratevm'
-    bintrayLabels     = ['jansi', 'GraalVm', 'SubstrateVM', 'native image', 'picocli']
+    bintrayPackage    = 'picocli-jansi-graalvm'
+    bintrayWebsiteUrl = 'https://github.com/remkop/picocli-jansi-graalvm'
+    bintrayLabels     = ['jansi', 'GraalVM', 'SubstrateVM', 'native image', 'picocli']
 }
 ext {
     bintrayDryRun     = false //[Default: false] Whether to run this as dry-run, without deploying
@@ -152,8 +152,8 @@ bintray {
         licenses = ['Apache-2.0']
         desc = description
         websiteUrl = bintrayWebsiteUrl
-        issueTrackerUrl = 'https://github.com/remkop/picocli-jansi-substratevm/issues'
-        vcsUrl   = 'https://github.com/remkop/picocli-jansi-substratevm.git'
+        issueTrackerUrl = 'https://github.com/remkop/picocli-jansi-graalvm/issues'
+        vcsUrl   = 'https://github.com/remkop/picocli-jansi-graalvm.git'
         labels = bintrayLabels
         publicDownloadNumbers = false
         version {
@@ -186,7 +186,7 @@ publishing {
                 root.appendNode('packaging',     'jar')
                 root.appendNode('name',          bintrayPackage)
                 root.appendNode('description',   description)
-                root.appendNode('url',           'https://github.com/remkop/picocli-jansi-substratevm')
+                root.appendNode('url',           'https://github.com/remkop/picocli-jansi-graalvm')
                 root.appendNode('inceptionYear', '2019')
                 root.children().last() + pomConfig
             }
