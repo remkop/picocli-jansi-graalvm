@@ -18,7 +18,7 @@ apply plugin: 'com.jfrog.bintray'
 
 
 group 'info.picocli'
-description 'picocli-jansi-graalvm - Create native Windows executable command line applications with colors in Java.'
+description '${rootProject.name} - Create native Windows executable command line applications with colors in Java.'
 version "$projectVersion"
 ext.moduleName = 'info.picocli'
 
@@ -31,13 +31,12 @@ repositories {
 }
 
 dependencies {
-    compile 'org.fusesource.jansi:jansi:1.18'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile "org.fusesource.jansi:jansi:$jansiVersion"
 }
 
 jar {
     manifest {
-        attributes 'Specification-Title'   : 'Picocli Jansi GraalVM',
+        attributes 'Specification-Title': 'Picocli Jansi GraalVM',
                 'Specification-Vendor'  : 'Remko Popma',
                 'Specification-Version' : version,
                 'Implementation-Title'  : 'Picocli Jansi GraalVM',
@@ -120,15 +119,15 @@ ext {
             }
         }
         scm {
-            url "https://github.com/remkop/picocli-jansi-graalvm/tree/master"
-            connection 'scm:git:https://github.com/remkop/picocli-jansi-graalvm.git'
-            developerConnection 'scm:git:ssh://github.com:remkop/picocli-jansi-graalvm.git'
+            url "https://github.com/remkop/${rootProject.name}/tree/master"
+            connection "scm:git:https://github.com/remkop/${rootProject.name}.git"
+            developerConnection "scm:git:ssh://github.com:remkop/${rootProject.name}.git"
         }
     }
 }
 ext {
-    bintrayPackage    = 'picocli-jansi-graalvm'
-    bintrayWebsiteUrl = 'https://github.com/remkop/picocli-jansi-graalvm'
+    bintrayPackage    = "${rootProject.name}"
+    bintrayWebsiteUrl = "https://github.com/remkop/${rootProject.name}"
     bintrayLabels     = ['jansi', 'GraalVM', 'SubstrateVM', 'native image', 'picocli']
 }
 ext {
@@ -152,8 +151,8 @@ bintray {
         licenses = ['Apache-2.0']
         desc = description
         websiteUrl = bintrayWebsiteUrl
-        issueTrackerUrl = 'https://github.com/remkop/picocli-jansi-graalvm/issues'
-        vcsUrl   = 'https://github.com/remkop/picocli-jansi-graalvm.git'
+        issueTrackerUrl = "https://github.com/remkop/${rootProject.name}/issues"
+        vcsUrl   = "https://github.com/remkop/${rootProject.name}.git"
         labels = bintrayLabels
         publicDownloadNumbers = false
         version {
@@ -186,7 +185,7 @@ publishing {
                 root.appendNode('packaging',     'jar')
                 root.appendNode('name',          bintrayPackage)
                 root.appendNode('description',   description)
-                root.appendNode('url',           'https://github.com/remkop/picocli-jansi-graalvm')
+                root.appendNode('url',           "https://github.com/remkop/${rootProject.name}")
                 root.appendNode('inceptionYear', '2019')
                 root.children().last() + pomConfig
             }
