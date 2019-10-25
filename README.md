@@ -1,4 +1,4 @@
-# picocli-jansi-substratevm
+# picocli-jansi-graalvm
 Helper library for using Jansi in GraalVM native images.
 
 Create native Windows executable command line applications with colors in Java.
@@ -14,18 +14,18 @@ By building your command line application with the [picocli](https://github.com/
 
 The [Jansi](https://github.com/fusesource/jansi) library makes it easy to enable ANSI escape codes in the `cmd.exe` console or PowerShell console. Unfortunately, the Jansi library (as of version 1.18) by itself is not sufficient to show show colors in the console when running as a GraalVM native image in Windows.
 
-`picocli-jansi-substratevm` is a helper library that enables the use of ANSI escape codes in GraalVM native image applications running on Windows.
+`picocli-jansi-graalvm` is a helper library that enables the use of ANSI escape codes in GraalVM native image applications running on Windows.
 
 ## Usage
 
-The `picocli.jansi.substratevm.AnsiConsole` class can be used as a drop-in replacement of the standard Jansi `org.fusesource.jansi.AnsiConsole` class to enable the Jansi ANSI support, either when running on the JVM or as a native image application.
+The `picocli.jansi.graalvm.AnsiConsole` class can be used as a drop-in replacement of the standard Jansi `org.fusesource.jansi.AnsiConsole` class to enable the Jansi ANSI support, either when running on the JVM or as a native image application.
 
 
 ```java
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import picocli.jansi.substratevm.AnsiConsole; // not org.fusesource.jansi.AnsiConsole
+import picocli.jansi.graalvm.AnsiConsole; // not org.fusesource.jansi.AnsiConsole
 
 @Command(name = "myapp", mixinStandardHelpOptions = true, version = "1.0",
          description = "Example native CLI app with colors")
@@ -51,7 +51,7 @@ call the `Workaround.enableLibraryLoad()` method before invoking the Jansi code.
 
 ```java
 import org.fusesource.jansi.internal.WindowsSupport;
-import picocli.jansi.substratevm.Workaround;
+import picocli.jansi.graalvm.Workaround;
 
 public class OtherApp {
 
@@ -93,7 +93,7 @@ set GRAAL_HOME=C:\apps\graalvm-ce-19.2.1
 :: compile our my.pkg.MyApp class (assuming the source is in the .\src directory)
 mkdir classes
 javac -cp ^
-  .;picocli-4.0.4.jar;picocli-codegen-4.0.4.jar;jansi-1.18.jar;picocli-jansi-substratevm-1.0.jar ^
+  .;picocli-4.0.4.jar;picocli-codegen-4.0.4.jar;jansi-1.18.jar;picocli-jansi-graalvm-1.0.jar ^
   -sourcepath src ^
   -d classes src\my\pkg\MyApp.java
 
@@ -102,7 +102,7 @@ cd classes && jar -cvef my.pkg.MyApp ../myapp.jar * && cd ..
 
 :: generate native image
 %GRAAL_HOME%\bin\native-image ^
-  -cp picocli-4.0.4.jar;jansi-1.18.jar;picocli-jansi-substratevm-1.0.jar;myapp.jar ^
+  -cp picocli-4.0.4.jar;jansi-1.18.jar;picocli-jansi-graalvm-1.0.jar;myapp.jar ^
   my.pkg.MyApp myapp
 ```
 
@@ -113,12 +113,12 @@ This creates a `myapp.exe` Windows executable in the current directory for the `
 Note that there is a [known issue](https://github.com/oracle/graal/issues/1762) with Windows native images generated with Graal 19.2.1:  the `msvcr100.dll` library is required as an external dependency. This file is not always present on a Windows 10 system, so we recommend that you distribute the `msvcr100.dll` file (you can find it in the `C:\Windows\System32` directory) together with your Windows native image.
 
 
-## Why do we need picocli-jansi-substratevm?
+## Why do we need picocli-jansi-graalvm?
 
 When generating a native image, we need two configuration files for Jansi:
 
-* [JNI](https://github.com/oracle/graal/blob/master/substratevm/JNI.md) - Jansi uses JNI, and all classes, methods, and fields that should be accessible via JNI must be specified during native image generation in a configuration file. This library adds a `/META-INF/native-image/jansi-substratevm/jni-config.json` configuration file for the Jansi `org.fusesource.jansi.internal.CLibrary` and `org.fusesource.jansi.internal.Kernel32` classes.
-* [resources](https://github.com/oracle/graal/blob/master/substratevm/RESOURCES.md) - to get a single executable we need to bundle the jansi.dll in the native image. We need some configuration to ensure the jansi.dll is included as a resource.  This library adds a `/META-INF/native-image/jansi-substratevm/resource-config.json` configuration file that ensures the `/META-INF/native/windows64/jansi.dll` file is included as a resource in the native image.
+* [JNI](https://github.com/oracle/graal/blob/master/substratevm/JNI.md) - Jansi uses JNI, and all classes, methods, and fields that should be accessible via JNI must be specified during native image generation in a configuration file. This library adds a `/META-INF/native-image/picocli-jansi-graalvm/jni-config.json` configuration file for the Jansi `org.fusesource.jansi.internal.CLibrary` and `org.fusesource.jansi.internal.Kernel32` classes.
+* [resources](https://github.com/oracle/graal/blob/master/substratevm/RESOURCES.md) - to get a single executable we need to bundle the jansi.dll in the native image. We need some configuration to ensure the jansi.dll is included as a resource.  This library adds a `/META-INF/native-image/picocli-jansi-graalvm/resource-config.json` configuration file that ensures the `/META-INF/native/windows64/jansi.dll` file is included as a resource in the native image.
 
 By including these configuration files in our JAR file, developers can simply put this JAR in the classpath when creating a native image; no command line options are necessary.
 
@@ -129,7 +129,7 @@ and these system properties are not available in SubstrateVM (the Graal native i
 As a result, the native library embedded in the Jansi JAR under `/META-INF/native/windows64/jansi.dll`
 cannot be extracted from the native image even when it is included as a resource.
 
-The `picocli.jansi.substratevm.Workaround` class provides a workaround for this.
+The `picocli.jansi.graalvm.Workaround` class provides a workaround for this.
 
 *I filed [a ticket for the above](https://github.com/fusesource/jansi/issues/162) on the Jansi issue tracker, and this project will become obsolete if the Jansi library maintainers accept the [pull](https://github.com/fusesource/jansi-native/pull/21) [requests](https://github.com/fusesource/hawtjni/pull/61) I proposed, or fix these problems in some other way.*
 
