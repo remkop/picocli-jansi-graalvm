@@ -3,7 +3,7 @@ package my.pkg;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import picocli.jansi.substratevm.AnsiConsole; // not org.fusesource.jansi.AnsiConsole
+import picocli.jansi.graalvm.AnsiConsole; // not org.fusesource.jansi.AnsiConsole
 
 @Command(name = "myapp", mixinStandardHelpOptions = true,
         version = {

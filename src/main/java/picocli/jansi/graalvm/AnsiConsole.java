@@ -1,4 +1,4 @@
-package picocli.jansi.substratevm;
+package picocli.jansi.graalvm;
 
 import java.io.OutputStream;
 import java.io.PrintStream;

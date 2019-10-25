@@ -1,4 +1,4 @@
-package picocli.jansi.substratevm;
+package picocli.jansi.graalvm;
 
 /**
  * Enables the use of Jansi native library code in GraalVM native image applications.

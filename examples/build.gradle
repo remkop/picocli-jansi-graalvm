@@ -46,6 +46,6 @@ test.dependsOn(nativeImage)
 graal {
     mainClass 'my.pkg.MyApp'
     outputName 'myapp'
-    //graalVersion '19.2.1'
+    graalVersion '19.2.1'
     option '--static'
 }
