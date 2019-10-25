@@ -113,6 +113,11 @@ This creates a `myapp.exe` Windows executable in the current directory for the `
 Note that there is a [known issue](https://github.com/oracle/graal/issues/1762) with Windows native images generated with Graal 19.2.1:  the `msvcr100.dll` library is required as an external dependency. This file is not always present on a Windows 10 system, so we recommend that you distribute the `msvcr100.dll` file (you can find it in the `C:\Windows\System32` directory) together with your Windows native image.
 
 
+## When do we need picocli-jansi-graalvm?
+
+When you want to generate a Windows GraalVM native image for your application.
+Other platforms support ANSI escape codes out of the box so Jansi is not needed.
+
 ## Why do we need picocli-jansi-graalvm?
 
 When generating a native image, we need two configuration files for Jansi:
