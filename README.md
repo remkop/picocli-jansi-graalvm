@@ -69,6 +69,25 @@ public class OtherApp {
 
 See the [Jansi README](https://github.com/fusesource/jansi) for more details on what Jansi can do.
 
+## Dependencies
+
+The `picocli-jansi-graalvm` library depends on `org.fusesource.jansi` and nothing else.
+
+In your project, we recommend you use the following dependencies:
+
+```
+// Gradle example
+dependencies {
+    compile "info.picocli:picocli:4.0.4"
+    compile "info.picocli:picocli-jansi-graalvm:1.0"
+    compile "org.fusesource.jansi:jansi:1.18"
+
+    annotationProcessor "info.picocli:picocli-codegen:4.0.4"
+}
+```
+
+See the [example project](https://github.com/remkop/picocli-jansi-graalvm/tree/master/examples).
+
 ## Generating a native image for Windows
 
 There are three steps to set up the toolchain for building native images on Windows. First, install the [latest version of GraalVM](https://www.graalvm.org/docs/getting-started/), 19.2.1 as of this writing.  Next, install the [Microsoft Windows SDK for Windows 7 and .NET Framework 4](https://www.microsoft.com/en-us/download/details.aspx?id=8442) as well as the [C compilers from KB2519277](https://stackoverflow.com/a/45784634/873282). The easiest way to install these is using [chocolatey](https://chocolatey.org/docs/installation):
