@@ -1,3 +1,35 @@
+# <a name="1.1.0"></a> 1.1.0 - Closeable
+
+This release adds a convenience API to reduce code in the application.
+
+The `AnsiConsole` class now implements `java.io.Closeable` and has a new `windowsInstall` method
+that calls `systemInstall` if the operating system is Windows.
+The `AnsiConsole.close` method calls `systemUninstall` if the operating system is Windows.
+
+Before:
+
+```java
+public static void main(String[] args) {
+    boolean windows = System.getProperty("os.name").toLowerCase().startsWith("win");
+    if (windows) { AnsiConsole.systemInstall(); }
+    int exitCode = new CommandLine(new MyApp()).execute(args);
+    if (windows) { AnsiConsole.systemUninstall(); }
+    System.exit(exitCode);
+}
+```
+
+After:
+
+```java
+public static void main(String[] args) {
+    int exitCode;
+    try (AnsiConsole ansi = AnsiConsole.windowsInstall()) { // enable colors on Windows
+        exitCode = new CommandLine(new MyApp()).execute(args);
+    }                                                       // Closeable does cleanup when done
+    System.exit(exitCode);
+}
+```
+
 # <a name="1.0.0"></a> 1.0.0 - Initial release
 
 Provide a workaround for issues that prevent Jansi from being used in GraalVM native images:

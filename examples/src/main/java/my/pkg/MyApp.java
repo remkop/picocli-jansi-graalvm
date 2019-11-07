@@ -21,9 +21,10 @@ public class MyApp implements Runnable {
     }
 
     public static void main(String[] args) {
-        AnsiConsole.systemInstall(); // enable colors on Windows
-        int exitCode = new CommandLine(new MyApp()).execute(args);
-        AnsiConsole.systemUninstall(); // cleanup when done
+        int exitCode;
+        try (AnsiConsole ansi = AnsiConsole.windowsInstall()) { // enable colors on Windows
+            exitCode = new CommandLine(new MyApp()).execute(args);
+        } // Closeable does cleanup when done
         System.exit(exitCode);
     }
 }

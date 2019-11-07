@@ -1,5 +1,7 @@
 package picocli.jansi.graalvm;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -21,7 +23,7 @@ import java.io.PrintStream;
  * <code>org.fusesource.jansi.AnsiConsole</code>.
  * </p>
  */
-public class AnsiConsole {
+public class AnsiConsole implements Closeable {
 
     private AnsiConsole() {
     }
@@ -121,5 +123,24 @@ public class AnsiConsole {
     public static PrintStream err() {
         Workaround.enableLibraryLoad();
         return org.fusesource.jansi.AnsiConsole.err();
+    }
+
+    /**
+     * Calls {@link #systemInstall()} if running on a Windows OS, otherwise does nothing.
+     * @return a {@link Closeable} instance
+     */
+    public static AnsiConsole windowsInstall() {
+        boolean windows = System.getProperty("os.name").toLowerCase().startsWith("win");
+        if (windows) { systemInstall(); }
+        return new AnsiConsole();
+    }
+
+    /**
+     * Calls {@link #systemUninstall()} if running on a Windows OS, otherwise does nothing.
+     */
+    @Override
+    public void close() {
+        boolean windows = System.getProperty("os.name").toLowerCase().startsWith("win");
+        if (windows) { systemUninstall(); }
     }
 }
