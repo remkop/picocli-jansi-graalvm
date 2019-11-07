@@ -79,7 +79,7 @@ In your project, we recommend you use the following dependencies:
 // Gradle example
 dependencies {
     compile "info.picocli:picocli:4.0.4"
-    compile "info.picocli:picocli-jansi-graalvm:1.0"
+    compile "info.picocli:picocli-jansi-graalvm:1.1.0"
     compile "org.fusesource.jansi:jansi:1.18"
 
     annotationProcessor "info.picocli:picocli-codegen:4.0.4"
@@ -112,7 +112,7 @@ set GRAAL_HOME=C:\apps\graalvm-ce-19.2.1
 :: compile our my.pkg.MyApp class (assuming the source is in the .\src directory)
 mkdir classes
 javac -cp ^
-  .;picocli-4.0.4.jar;picocli-codegen-4.0.4.jar;jansi-1.18.jar;picocli-jansi-graalvm-1.0.jar ^
+  .;picocli-4.0.4.jar;picocli-codegen-4.0.4.jar;jansi-1.18.jar;picocli-jansi-graalvm-1.1.0.jar ^
   -sourcepath src ^
   -d classes src\my\pkg\MyApp.java
 
@@ -121,7 +121,7 @@ cd classes && jar -cvef my.pkg.MyApp ../myapp.jar * && cd ..
 
 :: generate native image
 %GRAAL_HOME%\bin\native-image ^
-  -cp picocli-4.0.4.jar;jansi-1.18.jar;picocli-jansi-graalvm-1.0.jar;myapp.jar ^
+  -cp picocli-4.0.4.jar;jansi-1.18.jar;picocli-jansi-graalvm-1.1.0.jar;myapp.jar ^
   my.pkg.MyApp myapp
 ```
 
