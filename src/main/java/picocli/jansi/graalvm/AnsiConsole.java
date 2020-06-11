@@ -130,8 +130,7 @@ public class AnsiConsole implements Closeable {
      * @return a {@link Closeable} instance
      */
     public static AnsiConsole windowsInstall() {
-        boolean windows = System.getProperty("os.name").toLowerCase().startsWith("win");
-        if (windows) { systemInstall(); }
+        if (isWindows() && !isDisabled()) { systemInstall(); }
         return new AnsiConsole();
     }
 
@@ -140,7 +139,14 @@ public class AnsiConsole implements Closeable {
      */
     @Override
     public void close() {
-        boolean windows = System.getProperty("os.name").toLowerCase().startsWith("win");
-        if (windows) { systemUninstall(); }
+        if (isWindows() && !isDisabled()) { systemUninstall(); }
+    }
+
+    private static boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase().startsWith("win");
+    }
+
+    private static boolean isDisabled() {
+        return Boolean.getBoolean("org.fusesource.jansi.Ansi.disable");
     }
 }
