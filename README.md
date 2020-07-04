@@ -78,11 +78,11 @@ In your project, we recommend you use the following dependencies:
 ```
 // Gradle example
 dependencies {
-    compile "info.picocli:picocli:4.2.0"
-    compile "info.picocli:picocli-jansi-graalvm:1.1.0"
+    compile "info.picocli:picocli:4.3.2"
+    compile "info.picocli:picocli-jansi-graalvm:1.2.0"
     compile "org.fusesource.jansi:jansi:1.18"
 
-    annotationProcessor "info.picocli:picocli-codegen:4.2.0"
+    annotationProcessor "info.picocli:picocli-codegen:4.3.2"
 }
 ```
 
@@ -112,7 +112,7 @@ set GRAAL_HOME=C:\apps\graalvm-ce-19.2.1
 :: compile our my.pkg.MyApp class (assuming the source is in the .\src directory)
 mkdir classes
 javac -cp ^
-  .;picocli-4.2.0.jar;picocli-codegen-4.2.0.jar;jansi-1.18.jar;picocli-jansi-graalvm-1.1.0.jar ^
+  .;picocli-4.3.2.jar;picocli-codegen-4.3.2.jar;jansi-1.18.jar;picocli-jansi-graalvm-1.2.0.jar ^
   -sourcepath src ^
   -d classes src\my\pkg\MyApp.java
 
@@ -121,7 +121,7 @@ cd classes && jar -cvef my.pkg.MyApp ../myapp.jar * && cd ..
 
 :: generate native image
 %GRAAL_HOME%\bin\native-image ^
-  -cp picocli-4.2.0.jar;jansi-1.18.jar;picocli-jansi-graalvm-1.1.0.jar;myapp.jar ^
+  -cp picocli-4.3.2.jar;jansi-1.18.jar;picocli-jansi-graalvm-1.2.0.jar;myapp.jar ^
   my.pkg.MyApp myapp
 ```
 
@@ -164,7 +164,7 @@ The `jni-config.json` file contains JNI configuration for all classes, methods a
 The following command can be used to regenerate it:
 
 ```
-java -cp picocli-4.2.0.jar;jansi-1.18.jar;picocli-codegen-4.2.0.jar ^
+java -cp picocli-4.3.2.jar;jansi-1.18.jar;picocli-codegen-4.3.2.jar ^
   picocli.codegen.aot.graalvm.JniConfigGenerator ^
   org.fusesource.jansi.internal.CLibrary ^
   org.fusesource.jansi.internal.Kernel32 ^
